@@ -74,19 +74,26 @@ corrplot(corMatrix, order = "FPC", method = "color", type = "lower",
          tl.cex = 0.8, tl.col = rgb(0, 0, 0))
 ```
 
-# 1) Method: model fit
+# 1) Method: Rand Forest
 
 ```{r}
+#build the model.
 RF <- trainControl(method="cv", number=3, verboseIter=FALSE)
 modRandForest <- train(classe ~ ., data=TrainSet, method="rf",
                           trControl=RF)
 modRandForest$finalModel
 
-# prediction
+#prediction
 predictRandForest <- predict(modRandForest, newdata=TestSet)
 confMatRandForest <- confusionMatrix(predictRandForest, TestSet$classe)
 confMatRandForest
 ```
+
+The accuracy of this model is
+```{r}
+confMatRandForest$overall[1]
+```
+
 
 #2) Method: Decision Trees
 
@@ -98,6 +105,11 @@ fancyRpartPlot(modDecTree)
 predictDecTree <- predict(modDecTree, newdata=TestSet, type="class")
 confMatDecTree <- confusionMatrix(predictDecTree, TestSet$classe)
 confMatDecTree
+```
+
+The accuracy of this model is
+```{r}
+confMatDecTree$overall[1]
 ```
 
 #3) Method: Generalized Boosted Model
@@ -114,13 +126,17 @@ confMatGBM <- confusionMatrix(predictGBM, TestSet$classe)
 confMatGBM
 ```
 
+The accuracy of this model is
+```{r}
+confMatGBM$overall[1]
+```
 
 #Applying the Selected Model 
 
 The accuracy of the 3 models is
-Random Forest : 0.9963
-Decision Tree : 0.7368
-Generalized Boosted Model : 0.9839
+Random Forest : 0.9964316
+Decision Tree : 0.7367884
+Generalized Boosted Model : 0.9858963
 
 the best model us Random Forest and is used for testing data
 
